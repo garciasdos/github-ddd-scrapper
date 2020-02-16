@@ -18,6 +18,6 @@ final class GetRepositoryFromRepositoryName
 
     public function __invoke(RepositoryName $name)
     {
-        return $this->gitHubRepository->findByName($name);
+        return $this->gitHubRepository->findByNameOwnerAndBranch($name);
     }
 }

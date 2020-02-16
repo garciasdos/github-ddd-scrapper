@@ -8,5 +8,5 @@ use App\Domain\ValueObject\RepositoryName;
 
 interface GitHubRepository
 {
-    public function findByName(RepositoryName $name): Repository;
+    public function findByNameOwnerAndBranch(RepositoryName $name): Repository;
 }

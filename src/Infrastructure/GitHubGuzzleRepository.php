@@ -6,7 +6,9 @@ namespace App\Infrastructure;
 
 use App\Domain\GitHubRepository;
 use App\Domain\Repository;
+use App\Domain\ValueObject\RepositoryBranch;
 use App\Domain\ValueObject\RepositoryName;
+use App\Domain\ValueObject\RepositoryOwner;
 use GuzzleHttp\ClientInterface;
 
 final class GitHubGuzzleRepository implements GitHubRepository
@@ -19,9 +21,11 @@ final class GitHubGuzzleRepository implements GitHubRepository
         $this->client = $client;
     }
 
-    public function findByName(RepositoryName $name): Repository
+    public function findByNameOwnerAndBranch(RepositoryName $name, RepositoryOwner $owner, RepositoryBranch $branch): Repository
     {
-        $response = $this->client->request('GET', $name->value());
+        $response = $this->client->request('GET', sprintf(
+            self::RECURSIVE_ENDPOINT, $name->value(), $owner->value(), $branch->value()
+        ));
         die(print_r($response));
     }
 }

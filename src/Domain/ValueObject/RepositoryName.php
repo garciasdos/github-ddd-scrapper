@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
-final class RepositoryName
+final class RepositoryName extends StringValueObject
 {
     private string $value;
 
@@ -13,7 +13,7 @@ final class RepositoryName
         $this->value = $value;
     }
 
-    public static function fromString(string $name)
+    public static function fromString(string $name): self
     {
         self::validateString($name);
 
@@ -25,10 +25,5 @@ final class RepositoryName
         if (!filter_var($name, FILTER_VALIDATE_URL)) {
             throw new InvalidRepositoryNameException(sprintf('%s is not a url', $name));
         }
-    }
-
-    public function value(): string
-    {
-        return $this->value;
     }
 }

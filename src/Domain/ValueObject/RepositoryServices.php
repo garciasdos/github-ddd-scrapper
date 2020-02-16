@@ -6,5 +6,4 @@ namespace App\Domain\ValueObject;
 
 final class RepositoryServices
 {
-
 }
