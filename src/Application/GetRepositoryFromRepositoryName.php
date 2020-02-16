@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application;
 
+use App\Domain\GitHubRepository;
 use App\Domain\ValueObject\RepositoryName;
 
 final class GetRepositoryFromRepositoryName
