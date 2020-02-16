@@ -6,24 +6,19 @@ namespace App\Domain\ValueObject;
 
 final class RepositoryName extends StringValueObject
 {
-    private string $value;
-
-    private function __construct(string $value)
-    {
-        $this->value = $value;
-    }
+    private const SEPARATOR = '/';
 
     public static function fromString(string $name): self
     {
-        self::validateString($name);
-
-        return new self($name);
+        return new static($name);
     }
 
-    private static function validateString(string $name): void
+    public static function fromOwnerAndNamePairString(string $repositoryOwnerSlashName): self
     {
-        if (!filter_var($name, FILTER_VALIDATE_URL)) {
-            throw new InvalidRepositoryNameException(sprintf('%s is not a url', $name));
+        if (strpos($repositoryOwnerSlashName, self::SEPARATOR) === false) {
+            throw new InvalidRepositoryNameException(sprintf('%s is not valid. Format should be {owner/repo}', $repositoryOwnerSlashName));
         }
+        $data = explode(self::SEPARATOR, $repositoryOwnerSlashName);
+        return new static($data[1]);
     }
 }

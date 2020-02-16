@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Symfony\Command;
 
-use App\Application\GetRepositoryFromRepositoryName;
+use App\Application\GetRepositoryCountFromOwnerAndName;
+use App\Domain\ValueObject\RepositoryBranch;
 use App\Domain\ValueObject\RepositoryName;
+use App\Domain\ValueObject\RepositoryOwner;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,27 +20,38 @@ final class GetClassNamesCommand extends Command
 {
     protected static $defaultName = 'app:get-classes-from-repo';
 
-    private GetRepositoryFromRepositoryName $getRepositoryFromRepositoryName;
+    private GetRepositoryCountFromOwnerAndName $getRepositoryFromOwnerAndName;
 
-    public function __construct(GetRepositoryFromRepositoryName $getRepositoryFromRepositoryName)
+    public function __construct(GetRepositoryCountFromOwnerAndName $getRepositoryFromOwnerAndName)
     {
         parent::__construct();
-        $this->getRepositoryFromRepositoryName = $getRepositoryFromRepositoryName;
+        $this->getRepositoryFromOwnerAndName = $getRepositoryFromOwnerAndName;
     }
 
     protected function configure(): void
     {
         $this
             ->setDescription('Gets the class names from a GitHub PHP repository.')
-            ->addArgument('repository', InputArgument::REQUIRED, 'The name of the repository.')
-        ;
+            ->addArgument('owner/repository', InputArgument::REQUIRED, 'The owner and the name of the repository');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $repositoryName = $input->getArgument('repository');
+        $repositoryOwnerSlashName = $input->getArgument('owner/repository');
 
-        $repository = apply($this->getRepositoryFromRepositoryName, RepositoryName::fromString($repositoryName));
+        try {
+            $repository = apply($this->getRepositoryFromOwnerAndName,
+                                [
+                                    RepositoryOwner::fromOwnerAndNamePairString($repositoryOwnerSlashName),
+                                    RepositoryName::fromOwnerAndNamePairString($repositoryOwnerSlashName),
+                                ]
+            );
+        } catch (Exception $exception) {
+            $output->writeln($exception->getMessage());
+            return -1;
+        }
+
+        // TODO: print Repo things
 
         return 0;
     }

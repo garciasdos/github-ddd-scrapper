@@ -7,25 +7,21 @@ namespace App\Infrastructure;
 use App\Domain\GitHubRepository;
 use App\Domain\Repository;
 use App\Domain\ValueObject\RepositoryBranch;
+use App\Domain\ValueObject\RepositoryFiles;
 use App\Domain\ValueObject\RepositoryName;
 use App\Domain\ValueObject\RepositoryOwner;
-use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Client;
 
-final class GitHubGuzzleRepository implements GitHubRepository
+final class GitHubGuzzleRepository extends Client implements GitHubRepository
 {
-    private const RECURSIVE_ENDPOINT = '/repos/%s/%s/git/trees/%s?recursive=1';
-    private ClientInterface $client;
+    private const RECURSIVE_ENDPOINT = 'https://api.github.com/repos/%s/%s/git/trees/%s?recursive=1';
 
-    public function __construct(ClientInterface $client)
+    public function findByOwnerNameAndBranch(RepositoryOwner $owner, RepositoryName $name, RepositoryBranch $branch): Repository
     {
-        $this->client = $client;
-    }
-
-    public function findByNameOwnerAndBranch(RepositoryName $name, RepositoryOwner $owner, RepositoryBranch $branch): Repository
-    {
-        $response = $this->client->request('GET', sprintf(
-            self::RECURSIVE_ENDPOINT, $name->value(), $owner->value(), $branch->value()
+        $response = $this->get(sprintf(
+            self::RECURSIVE_ENDPOINT, $owner->value(), $name->value(), $branch->value()
         ));
-        die(print_r($response));
+
+        return new Repository($name, $owner, $branch, RepositoryFiles::fromJsonString($response->getBody()->getContents()));
     }
 }
