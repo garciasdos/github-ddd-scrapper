@@ -20,14 +20,25 @@ final class RepositoryFile
         return new self($string);
     }
 
-    public function filetype(): string
+    public function splittedFilename()
     {
-        return pathinfo($this->path(), PATHINFO_EXTENSION);
+        return preg_split('/(?=[A-Z])/', $this->filename(), -1,PREG_SPLIT_NO_EMPTY);
+    }
+
+    public function classType(): string
+    {
+        $splittedFilename = $this->splittedFilename();
+        return $splittedFilename[array_key_last($splittedFilename)];
     }
 
     public function filename(): string
     {
         return pathinfo($this->path(), PATHINFO_FILENAME);
+    }
+
+    public function filetype(): string
+    {
+        return pathinfo($this->path, PATHINFO_EXTENSION);
     }
 
     public function path(): string

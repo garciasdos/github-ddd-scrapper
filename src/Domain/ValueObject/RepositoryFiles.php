@@ -31,15 +31,17 @@ final class RepositoryFiles
 
     public function getFilenameWordList()
     {
-
         $list = [];
-        foreach ($this->getAll() as $file) {
+        foreach ($this->files as $file) {
             if ($file->filetype() === 'php') {
-                preg_match_all('/((?:^|[A-Z])[a-z]+)/', $file->filetype(),$list);
+                    if (!array_key_exists($file->classType(), $list)) {
+                        $list[$file->classType()] = 0;
+                    }
+                    $list[$file->classType()]++;
             }
         }
 
-        die();
+        die(print_r($list));
     }
 
     /** @return RepositoryFile[] */
