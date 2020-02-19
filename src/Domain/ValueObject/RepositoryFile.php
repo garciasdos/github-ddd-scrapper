@@ -8,15 +8,13 @@ final class RepositoryFile
 {
     private string $path;
 
-    public function __construct(string $path)
+    private function __construct(string $path)
     {
         $this->path = $path;
     }
 
-    public static function fromString(string $string): self
+    public static function fromPath(string $string): self
     {
-        self::validate($string);
-
         return new self($string);
     }
 
@@ -44,12 +42,5 @@ final class RepositoryFile
     public function path(): string
     {
         return $this->path;
-    }
-
-    private static function validate(string $string): void
-    {
-//        if (!filter_var($string, )) {
-//            throw new InvalidRepositoryFileException(sprintf('%s is not a valid path', $string));
-//        }
     }
 }

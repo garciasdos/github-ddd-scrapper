@@ -8,9 +8,9 @@ final class RepositoryName extends StringValueObject
 {
     private const SEPARATOR = '/';
 
-    public static function fromString(string $name): self
+    public static function fromString(string $value): self
     {
-        return new static($name);
+        return new static($value);
     }
 
     public static function fromOwnerAndNamePairString(string $repositoryOwnerSlashName): self

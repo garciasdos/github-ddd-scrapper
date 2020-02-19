@@ -20,12 +20,12 @@ final class GetClassNamesCommand extends Command
 {
     protected static $defaultName = 'app:get-classes-from-repo';
 
-    private GetRepositoryCountFromOwnerAndName $getRepositoryFromOwnerAndName;
+    private GetRepositoryCountFromOwnerAndName $getRepositoryCountFromOwnerAndName;
 
-    public function __construct(GetRepositoryCountFromOwnerAndName $getRepositoryFromOwnerAndName)
+    public function __construct(GetRepositoryCountFromOwnerAndName $getRepositoryCountFromOwnerAndName)
     {
         parent::__construct();
-        $this->getRepositoryFromOwnerAndName = $getRepositoryFromOwnerAndName;
+        $this->getRepositoryCountFromOwnerAndName = $getRepositoryCountFromOwnerAndName;
     }
 
     protected function configure(): void
@@ -40,10 +40,10 @@ final class GetClassNamesCommand extends Command
         $repositoryOwnerSlashName = $input->getArgument('owner/repository');
 
         try {
-            $repository = apply($this->getRepositoryFromOwnerAndName,
+            $repositoryCount = apply($this->getRepositoryCountFromOwnerAndName,
                                 [
-                                    RepositoryOwner::fromOwnerAndNamePairString($repositoryOwnerSlashName),
-                                    RepositoryName::fromOwnerAndNamePairString($repositoryOwnerSlashName),
+                                    $repositoryOwnerSlashName,
+                                    $repositoryOwnerSlashName,
                                 ]
             );
         } catch (Exception $exception) {
@@ -51,7 +51,7 @@ final class GetClassNamesCommand extends Command
             return -1;
         }
 
-        // TODO: print Repo things
+        echo print_r($repositoryCount);
 
         return 0;
     }

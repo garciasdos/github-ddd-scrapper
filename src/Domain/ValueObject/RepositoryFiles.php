@@ -18,7 +18,7 @@ final class RepositoryFiles
         $files = new self();
 
         foreach ($data['tree'] as $file) {
-            $files->add(RepositoryFile::fromString($file['path']));
+            $files->add(RepositoryFile::fromPath($file['path']));
         }
 
         return $files;
@@ -29,7 +29,7 @@ final class RepositoryFiles
         $this->files[] = $file;
     }
 
-    public function getFilenameWordList()
+    public function getRepositoryCount(): array
     {
         $list = [];
         foreach ($this->files as $file) {
@@ -41,7 +41,7 @@ final class RepositoryFiles
             }
         }
 
-        die(print_r($list));
+        return $list;
     }
 
     /** @return RepositoryFile[] */

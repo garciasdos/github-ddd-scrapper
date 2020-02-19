@@ -12,19 +12,16 @@ use App\Domain\ValueObject\RepositoryOwner;
 final class GetRepositoryCountFromOwnerAndName
 {
     private GitHubRepository $gitHubRepository;
-    private GitHubCountRepository $gitHubCountRepository;
 
     public function __construct(GitHubRepository $gitHubRepository)
     {
         $this->gitHubRepository = $gitHubRepository;
     }
 
-    public function __invoke(RepositoryOwner $owner, RepositoryName $name)
+    public function __invoke(string $owner, string $name)
     {
-        $repository = $this->gitHubRepository->findByOwnerNameAndBranch($owner, $name, RepositoryBranch::master());
+        $repository = $this->gitHubRepository->findByOwnerNameAndBranch(RepositoryOwner::fromOwnerAndNamePairString($owner), RepositoryName::fromOwnerAndNamePairString($name), RepositoryBranch::master());
 
-        $repository->files()->getFilenameWordList();
-
-
+        return $repository->files()->getRepositoryCount();
     }
 }
