@@ -18,3 +18,8 @@ RUN touch /usr/local/etc/php/conf.d/short_open_tag.ini \
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
+
+# xdebug
+RUN pecl install xdebug
+
+COPY etc/docker/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
